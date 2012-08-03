@@ -1,0 +1,133 @@
+<section>
+    <header>
+	    <h1><%= customer.name %> bearbeiten</h1>
+
+	    <p>Hier kannst du den Kunden bearbeiten. Sei vorsichtig!</p>
+	</header>
+	<% if (flash) { %>
+		<% if (flash.error) { %>
+			<% flash.error.forEach(function (message) { %>
+				<p class="alert alert-error"><%= message %></p>
+			<% }); %>
+		<% } %>
+	<% } %>
+
+	<form class="form-horizontal" action="/admin/customers/<%= customer.id %>/edit" method="post">
+	    <fieldset>
+	        <legend>Allgemein</legend>
+
+	    	<div class="control-group">
+	      	    <label class="control-label" for="customerId">ID:</label>
+
+	      	    <div class="controls">
+	        	    <input type="text" class="input-xlarge" name="customerId" id="customerId" value="<%= customer.id %>" disabled>
+	      	    </div>
+	        </div>
+
+	    	<div class="control-group">
+	    		<% var name = customer.name || ''; %>
+	      	    <label class="control-label" for="name">Name:</label>
+
+	      	    <div class="controls">
+	        	    <input type="text" class="input-xlarge" name="name" id="name" value="<%= name %>">
+	      	    </div>
+	        </div>
+	 	</fieldset>
+
+	    <fieldset>
+	        <legend>Twitter</legend>
+
+	        <% /* Twitter active? */ %>
+	        <div class="control-group">
+				<label class="control-label" for="twitterActive">Aktiv</label>
+
+				    <div class="controls">
+				        <label class="checkbox">
+				        	<% var checked = (customer.services.twitter.active) ? 'checked' : ''; %>
+					        <input type="checkbox" id="twitterActive" name="twitterActive" <%= checked %>>
+				        </label>
+				    </div>
+				</label>
+	      	</div>
+
+	      	<% /* Twitter username ? */ %>
+	        <div class="control-group">
+	      	    <label class="control-label" for="twitterId">Username</label>
+
+	      	    <div class="controls">
+		      		<div class="input-prepend">
+		      			<% var twitterId = customer.services.twitter.id || '' %>
+
+		      		    <span class="add-on">@</span><input class="span2" id="twitterId" name="twitterId" size="16" type="text" value="<%= twitterId %>">
+		      		</div>
+	        	</div>
+	      	</div>
+
+	      	<% /* Twitter oAuth Token */ %>
+	        <div class="control-group">
+	      	    <label class="control-label" for="twitterOauthToken">oAuth Token:</label>
+
+	      	    <div class="controls">
+		      		<% var twitterOauthToken = customer.services.twitter.oauth.token || 'Der Kunde hat sich bisher nicht angemeldet.' %>
+
+		      		<input class="input-xlarge" id="twitterOauthToken" name="twitterOauthToken" size="30" type="text" value="<%= twitterOauthToken %>" disabled>
+	        	</div>
+	      	</div>
+
+			<% /* Twitter oAuth Secret */ %>
+	        <div class="control-group">
+	      	    <label class="control-label" for="twitterOauthSecret">oAuth Secret:</label>
+
+	      	    <div class="controls">
+		      		<% var twitterOauthSecret = customer.services.twitter.oauth.secret || 'Der Kunde hat sich bisher nicht angemeldet.' %>
+
+		      		<input class="input-xlarge" id="twitterOauthSecret" name="twitterOauthSecret" size="30" type="text" value="<%= twitterOauthSecret %>" disabled>
+	        	</div>
+	      	</div>
+	    </fieldset>
+
+	    <fieldset>
+	        <legend>Facebook</legend>
+
+	        <% /* Facebook active? */ %>
+	        <div class="control-group">
+				<label class="control-label" for="facebookActive">Aktiv</label>
+
+					<div class="controls">
+					    <label class="checkbox">
+					    	<% var checked = (customer.services.facebook.active) ? 'checked' : ''; %>
+					        <input type="checkbox" id="facebookActive" name="facebookActive" <%= checked %>>
+					    </label>
+					</div>
+			    </label>
+	      	</div>
+
+	      	<% /* Facebook profile id */ %>
+	        <div class="control-group">
+	      	    <label class="control-label" for="facebookId">ID des Profils:</label>
+
+	      	    <div class="controls">
+		      		<% var facebookId = customer.services.facebook.id || '' %>
+
+		      		<input class="span2" id="facebookId" name="facebookId" size="16" type="text" value="<%= facebookId %>">
+	        	</div>
+	      	</div>
+
+	      	<% /* Facebook oAuth Token */ %>
+	        <div class="control-group">
+	      	    <label class="control-label" for="facebookOauthToken">oAuth Token:</label>
+
+	      	    <div class="controls">
+		      		<% var facebookOauthToken = customer.services.facebook.oauth.token || 'Der Kunde hat sich bisher nicht angemeldet.' %>
+
+		      		<input class="input-xlarge disabled" id="facebookOauthToken" name="facebookOauthToken" size="30" type="text" value="<%= facebookOauthToken %>" disabled>
+	        	</div>
+	      	</div>
+	    </fieldset>
+
+		<div class="form-actions">
+			<input class="btn btn-primary icon-ok" type="submit" value="Speichern" />
+			<a class="btn" href="/admin/customers"><i class="icon-ban-circle"></i> Abbrechen</a>
+		</div>
+	</form>
+</section>

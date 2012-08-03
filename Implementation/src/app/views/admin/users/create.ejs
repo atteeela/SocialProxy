@@ -1,0 +1,70 @@
+<section>
+    <header>
+	    <h1>Neuen Benutzer anlegen</h1>
+
+	    <p>Hier steht ein Beschreibungstext.</p>
+	</header>
+	<% if (flash) { %>
+		<% if (flash.error) { %>
+			<% flash.error.forEach(function (message) { %>
+				<p class="alert alert-error"><%= message %></p>
+			<% }); %>
+		<% } %>
+	<% } %>
+	<form class="form-horizontal" action="/admin/users/create" method="post">
+	    <fieldset>
+	        <legend>Allgemein</legend>
+
+	    	<div class="control-group">
+	      	    <label class="control-label" for="email">E-Mail</label>
+	      	    <div class="controls">
+	      	    	<% var email = email || ""; %>
+	        	    <input type="text" class="input-xlarge" name="email" id="email" value="<%= email %>">
+	        	    
+	        	    <p class="help-block">Die E-Mail Adresse, die für das einloggen verwendet wird.</p>
+	      	    </div>
+	        </div>
+	 	</fieldset>
+
+	    <fieldset>
+	        <legend>Persönliches</legend>
+
+	        <div class="control-group">
+	        	<% var firstName = firstName || ""; %>
+	      	    <label class="control-label" for="firstName">Vorname</label>
+	      		<div class="controls">
+	        		<input type="text" class="input-xlarge" name="firstName" id="firstName" value="<%= firstName %>">
+	      		</div>
+	        </div>
+	        <div class="control-group">
+	        	<% var lastName = lastName || ""; %>
+	      	    <label class="control-label" for="lastName">Nachname</label>
+	      		<div class="controls">
+	        	    <input type="text" class="input-xlarge" name="lastName" id="lastName" value="<%= lastName %>">
+	      		</div>
+	    	</div>
+	    </fieldset>
+
+	    <fieldset>
+	        <legend>Sicherheit</legend>
+
+		    <div class="control-group">
+		        <label class="control-label" for="password">Passwort</label>
+		      	<div class="controls">
+		            <input type="password" class="input-xlarge" name="password" id="password">
+		      	</div>
+		    </div>
+		    <div class="control-group">
+		        <label class="control-label" for="passwordConfirmation">Passwort bestätigen</label>
+		      	<div class="controls">
+		            <input type="password" class="input-xlarge" name="passwordConfirmation" id="passwordConfirmation">
+		      	</div>
+		    </div>
+		</fieldset>
+
+		<div class="form-actions">
+			<input class="btn btn-primary icon-ok" type="submit" value="Speichern" />
+			<a class="btn" href="/admin/users"><i class="icon-ban-circle"></i> Abbrechen</a>
+		</div>
+	</form>
+</section>

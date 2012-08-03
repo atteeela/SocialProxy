@@ -1,0 +1,33 @@
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+
+section header {
+	margin:10px 0 35px;
+}
+
+section header p {
+	line-height:1.7em;
+	margin:10px 0 35px;
+}
+
+.sidebar-nav {
+  padding: 9px 0;
+}
+
+.hello {
+	padding:0;
+}
+
+.hello > h1 {
+	font-size:520%;
+	margin-top:160px;
+	text-align:center;
+}
+
+.hello > p {
+	margin-top:25px;
+	opacity:.8;
+	text-align:center;
+}
