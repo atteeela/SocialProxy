@@ -1,7 +1,0 @@
-src/config/services.js
-src/config/environment.js
-src/db/customers.db
-src/db/users.db
-src/node_modules
-src/npm*.log
-src/.DS_Store
