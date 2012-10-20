@@ -1,0 +1,39 @@
+konexmedia${
+
+	"name":"Konex Media",
+	"services":{
+
+	"twitter":
+
+		{
+			"active":true,
+			"id":"konexmedia",
+			"oauth":
+				{
+					"token":"80032200-X4S5kUPQvBVxT3W9zjdLMl8W2xhaKGjdKVtAeSLw",
+					"secret":"gKZdgu6LzB7XjyV4T3CgVWDWSOkzHH1Or84iaQQONg"
+				}
+		},
+
+	"facebook":
+
+		{
+			"active":true,
+			"id":"100000734327661",
+			"oauth":
+				{
+				"token":"AAAFZB3788TOwBAJrmFyByf9NtOqZCMGxDinRcaO2cfZBZBAXdV1khZACzVHIlrJ801icE237eAlPJZBm63pbfaPUOAb7Ue62pJ7A73Sv5aGAZDZD"
+				}
+		}
+	}
+
+	,"id":"konexmedia"
+
+}
+
+franzjosef${
+
+	"name":"Fr
+
+
+	.....

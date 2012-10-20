@@ -17,7 +17,7 @@ var path             = require('path'),
     TwitterStrategy  = require('passport-twitter').Strategy,
     FacebookStrategy = require('passport-facebook').Strategy;
 
-module.exports = function (app, config, customersDB) {
+module.exports = function (app, config, customersDB, auth) {
 
     var mw = {
 
