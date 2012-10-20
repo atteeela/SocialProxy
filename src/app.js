@@ -7,7 +7,7 @@
  *     André König <andre.koenig@konexmedia.com>
  *
  * MIT Licensed
- * GIT TEST
+ * 
  */
 var async            = require('async'),
     express          = require('express'),
