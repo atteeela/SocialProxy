@@ -1,24 +1,39 @@
 /*!
- * socialproxy
+ * OpenProxy
  *
  * Copyright(c) 2012 Konex Media, Stuttgart, Germany
  *
  * Author:
- *     André König <andre.koenig@konexmedia.com>
+ *     Robert Böing<robert.boeing@konexmedia.com>
  *
  * MIT Licensed
- * 
+ *
  */
+
+
 var async            = require('async'),
-    express          = require('express'),
+	express          = require('express'),
 	expressNamespace = require('express-namespace'),
 	passport         = require('passport'),
-	pkginfo          = require('pkginfo')(module, 'name', 'version', 'author')
-    Solar            = require('solar'),
 	Settings         = require('settings');
 
-var meta = module.exports,
-	app = module.exports = express.createServer();
+
+
+
+
+// Load the application settings
+
+var config = {
+	environment: new Settings(__dirname + '/config/environment.js').getEnvironment().environment,
+	services: new Settings(__dirname + '/config/services.js').getEnvironment().services
+};
+
+
+
+module.exports = express.createServer();
+
+var app = module.exports;
+
 
 // Configuration
 
@@ -36,40 +51,46 @@ app.configure(function() {
     app.use(express.static(__dirname + '/public'));
 });
 
-app.configure('development', function(){
-    app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+
+/*
+
+app.get('/:service/:view/:order', function(req, res){
+
+    console.log(req.header('a') || "nix");
+    console.log(req.params.service);
+    console.log(req.params.view);
+  
+    setTimeout(function(){
+    	res.send('Hello World\n');
+    },2000)
+    
 });
 
-app.configure('production', function(){
-    app.use(express.errorHandler());
-});
+*/
 
-// Load the application settings
-var config = {
-	environment: new Settings(__dirname + '/config/environment.js').getEnvironment().environment,
-    meta: meta,
-	services: new Settings(__dirname + '/config/services.js').getEnvironment().services
-};
+// http header || config - Parameter
 
-// Init the customer database.
-var databases = {};
+// node openproxy.js service id token secret(optional)
 
-async.waterfall([
-    function (callback) {
-    	databases.users = new Solar('db/users.db');
-        databases.users.on('loaded', callback);
-    },
-    function (callback) {
-        databases.customers = new Solar('db/customers.db');
-        databases.customers.on('loaded', callback);
-    }
-], function (err, results) {
+/*
+var auth = {
+		service:process.argv[2],
+		id:process.argv[3],
+		token:process.argv[4],
+		secret:(process.argv[2] == "facebook")?process.argv[5]:false
+	}
+*/
 
-    // Init the app.
-	require('./app/')(app, config, databases);
 
-	// Start the listening process.
-	app.listen(process.env.PORT || config.environment.port || 3000);
+// Start the listening process.
+app.listen(process.env.PORT || config.environment.port || 3000);
 
-	console.log("%s (v%s) listening on port %d in %s mode", meta.name, meta.version, app.address().port, app.settings.env);
-});
+console.log("I'm intrested3.");
+
+
+
+// Routing
+
+
+
+var services = require('./app/services')(app,config);

@@ -14,7 +14,9 @@
 
 var caches = require('memory-cache');
 
-module.exports = function (app, config, twitterAPIConnections) {
+module.exports = function (app, config, twitterAPIConnection) {
+
+	console.log('init tweet2');
 
 	var helpers = {
 		scraper : function (origin) {
@@ -25,12 +27,15 @@ module.exports = function (app, config, twitterAPIConnections) {
 			};
 		}
 	};
-
 	app.get('/latest', function (req, res) {
-		var customer = req.customer,
-		    cacheId = 'twitter_tweets_latest_' + customer.id,
-			tweets = caches.get(cacheId),
-		    twitterAPI = twitterAPIConnections[customer.id];
+		console.log('call latest');
+
+
+
+		var customerId = 'konexmedia',
+		    cacheId = 'twitter_tweets_latest_' + customerId,
+			tweets = '',
+		    twitterAPI = twitterAPIConnection;
 
 		if (!tweets) {
 			twitterAPI.getUserTimeline(function (err, data) {
@@ -46,7 +51,8 @@ module.exports = function (app, config, twitterAPIConnections) {
 				caches.put(cacheId, tweets, config.services.twitter.cachetimeout);
 
 				// TODO: Exception handling.
-				res.send(tweets);
+				if(tweets){
+					res.send(tweets);}
 			});
 		} else {
 			res.send(tweets);

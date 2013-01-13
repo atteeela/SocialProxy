@@ -14,47 +14,29 @@
 
 var Twitter = require('ntwitter');
 
-module.exports = function (app, config, customersDB) {
+module.exports = function (app, config) {
+
+	console.log('init twitter');
 
 	// The connections array holds all open customer connections
 	// to the Twitter API, which are accessable via connections[customerId].
-	var twitterAPIConnections = [],
-	    mw = {
-		    checkIfActive : function (req, res, next) {
-			    var customer = req.customer,
-			        twitter;
 
-			    if (!customer.services.twitter.active) {
-				    res.send('Twitter is not active for the customer "' + customer.name + '".');
-			    } else if (!customer.services.twitter.oauth.token) {
-				    res.send('The customer did not activate the account yet.');
-			    } else {
+    // Create the twitter api communication object.
+    var twitter = new Twitter({
+	    consumer_key: config.services.twitter.consumer_key,
+	    consumer_secret: config.services.twitter.consumer_secret,
+	    access_token_key: '80032200-X4S5kUPQvBVxT3W9zjdLMl8W2xhaKGjdKVtAeSLw',
+	    access_token_secret: 'gKZdgu6LzB7XjyV4T3CgVWDWSOkzHH1Or84iaQQONg'
+    });
 
-				    // Create the twitter api communication object.
-				    twitter = new Twitter({
-					    consumer_key: config.services.twitter.consumer_key,
-					    consumer_secret: config.services.twitter.consumer_secret,
-					    access_token_key: customer.services.twitter.oauth.token,
-					    access_token_secret: customer.services.twitter.oauth.secret
-				    });
+	var  twitterAPIConnection = twitter;
 
-				    twitter.verifyCredentials(function (err, data) {
-					    if (err) {
-						    res.send('Twitter API answered with: ' + JSON.stringify(err));
-					    }
 
-					    twitterAPIConnections[customer.id] = twitter;
 
-					    next();
-				    });
-			    }
-		    }
-	    };
-
-	app.namespace('/twitter', function () {
-
-		app.namespace('/tweets', mw.checkIfActive, function () {
-			require('./tweets')(app, config, twitterAPIConnections);
+		app.namespace('/tweets', function () {
+			require('./tweets')(app, config, twitterAPIConnection);
 		});
-	});
+	
+
+
 };
