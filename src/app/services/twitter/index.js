@@ -16,6 +16,11 @@
 
 module.exports = function (app, config) {
  
+    var api = {
+        //robert try it with prototyp
+        //twitterAPI = new Twitter(config.services.twitter.configuration),
+    }
+
     var mw= {
 
         //TODO config via parameter
@@ -78,12 +83,13 @@ module.exports = function (app, config) {
                 	// Configure req.services.twitter.access_token_key and 
                 	// req.services.twitter.access_token_secret with stored parameter
                 	//console.log("Configure req.services.twitter.access_token_key and req.services.twitter.access_token_secret with stored parameter");
-                   req.twitterConfiguration = {
+                   config.services.twitter.configuration = {
                             consumer_key: config.services.twitter.consumer_key,
                             consumer_secret: config.services.twitter.consumer_secret,
                             access_token_key: config.services.twitter.access_token_key,
                             access_token_secret: config.services.twitter.access_token_secret
                         };
+                    console.log(config.services.twitter.configuration);
 					next();
 
                 } else {

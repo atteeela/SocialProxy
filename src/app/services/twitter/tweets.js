@@ -28,17 +28,17 @@ var helpers = {
 
 //caches.debug(true);
 
-module.exports = function (app, config) {
+module.exports = function (app, config,api) {
 	app.get('/latest', function (req, res) {
-			
-		var cacheId = 'twitter_tweets_latest_' + req.twitterConfiguration.consumer_key,
+		var cacheId = 'twitter_tweets_latest_' + config.services.twitter.configuration.consumer_key,
 			tweets=[];
 
 		var get = function(callback){
 
 
 			//create a Twitter-API-Object
-			var twitterAPI = new Twitter(req.twitterConfiguration),
+
+			var twitterAPI = new Twitter(config.services.twitter.configuration),
 				tweets = [];
 
 			twitterAPI.get('statuses/user_timeline', {trim_user: 'true'}, function(err, data) {
