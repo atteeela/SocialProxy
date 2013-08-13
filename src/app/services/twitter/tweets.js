@@ -12,7 +12,7 @@
 
 "use strict";
 
-var caches = require('memory-cache');
+var caches = require('../../../cache.js');
 var Twitter = require('mtwitter');
 
 //little templating
@@ -36,11 +36,25 @@ module.exports = function (app, config) {
 
 		var get = function(callback){
 
-			setTimeout(function(){
-				console.log('originaldaten von Twitter abgerufen');
-				tweets.push({value:'Daten von Twitter'});
-				callback(tweets);
-			},2000);
+
+			//create a Twitter-API-Object
+			var twitterAPI = new Twitter(req.twitterConfiguration),
+				tweets = [];
+
+			twitterAPI.get('statuses/user_timeline', {trim_user: 'true'}, function(err, data) {
+				var tweet;
+				if(!err){
+					data.forEach(function (tweet) {					
+						tweet = helpers.scraper(tweet);
+						tweets.push(tweet);
+					});
+					console.log('originaldaten von Twitter abgerufen');
+					callback(tweets);
+				}else{
+					console.log('Fehler:'+err);
+				}
+
+			});
 				 
 		};
 
@@ -56,7 +70,16 @@ module.exports = function (app, config) {
 
 
 
-/*			//caches.setPreput(cacheId);
+/*			
+
+
+			setTimeout(function(){
+				console.log('originaldaten von Twitter abgerufen');
+				tweets.push({value:'Daten von Twitter'});
+				callback(tweets);
+			},2000);
+
+//caches.setPreput(cacheId);
 			//create a Twitter-API-Object
 			var twitterAPI = new Twitter(req.twitterConfiguration),
 				tweets = [];
