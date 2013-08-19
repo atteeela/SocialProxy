@@ -20,11 +20,12 @@ var express          = require('express'),
 
 
 
+
 // Load the application settings
 
 var config = {
 	environment: new Settings(__dirname + '/config/environment.js').getEnvironment().environment,
-	services: new Settings(__dirname + '/config/services.js').getEnvironment().services
+	services: new Settings(__dirname + '/config/services.js').getEnvironment().services,
 };
 
 
@@ -40,11 +41,16 @@ app.configure(function() {
 
     app.use(app.router);
 
+    
+
 });
 
 
 // Start the listening process.
 app.listen(process.env.PORT || config.environment.port || 80);
+
+
+
 
 // Routing
 var services = require('./app/services')(app,config);

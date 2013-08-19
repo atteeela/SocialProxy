@@ -12,26 +12,62 @@
 
 "use strict";
 
-var caches = require('../../../cache.js');
-var Twitter = require('mtwitter');
+var helpers = require('../../lib/helpers');
+var util = require('util'),
+    Twitter = require('simple-twitter');
 
-//little templating
-var helpers = {
-	scraper : function (origin) {
-		return {
-			id: origin.id,
-			text: origin.text,
-			created_at: origin.created_at
-		};
-	}
+exports.latest = function (req,callback) {
+
+	var api = new Twitter(	req.config.services.twitter.consumer_key,
+							req.config.services.twitter.consumer_secret,
+							req.config.services.twitter.access_token_key,
+							req.config.services.twitter.access_token_secret);
+
+
+	api.get('statuses/user_timeline', '?trim_user=true', function(err, data) {
+
+		//console.log(req.config.services.twitter);
+
+
+
+		data = JSON.parse(data);
+		var tweet,tweets = [];
+		if(!err){
+			data.forEach(function (tweet) {					
+				tweet = helpers.scraper(tweet);
+				tweets.push(tweet);
+			});
+			console.log('originaldaten von Twitter abgerufen');
+			callback(tweets);
+		}else{
+			console.log('Fehler:'+err);
+			callback(err);
+		}
+
+		
+
+	});
+
+
 };
 
-//caches.debug(true);
 
-module.exports = function (app, config,api) {
+
+
+
+
+
+
+
+
+
+
+
+/*
 	app.get('/latest', function (req, res) {
 		var cacheId = 'twitter_tweets_latest_' + config.services.twitter.configuration.consumer_key,
 			tweets=[];
+
 
 		var get = function(callback){
 
@@ -41,20 +77,6 @@ module.exports = function (app, config,api) {
 			var twitterAPI = new Twitter(config.services.twitter.configuration),
 				tweets = [];
 
-			twitterAPI.get('statuses/user_timeline', {trim_user: 'true'}, function(err, data) {
-				var tweet;
-				if(!err){
-					data.forEach(function (tweet) {					
-						tweet = helpers.scraper(tweet);
-						tweets.push(tweet);
-					});
-					console.log('originaldaten von Twitter abgerufen');
-					callback(tweets);
-				}else{
-					console.log('Fehler:'+err);
-				}
-
-			});
 				 
 		};
 
@@ -62,11 +84,10 @@ module.exports = function (app, config,api) {
 			res.send(data);
 		}
 			
-		caches.get(cacheId,get,render);
+		cache.get(req,get,render);
 
 	});
 
-};
 
 
 

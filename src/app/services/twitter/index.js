@@ -12,111 +12,52 @@
 
 "use strict";
 
+var cache = require('../../lib/cache');
+var extend = require('util')._extend;
+
 
 
 module.exports = function (app, config) {
- 
-    var api = {
-        //robert try it with prototyp
-        //twitterAPI = new Twitter(config.services.twitter.configuration),
-    }
 
     var mw= {
 
         //TODO config via parameter
-        config : config,
-
-        // Middleware for checking whether a customer exists or not.
-        // If so, we load the customer from the database and pass it
-        // to the request object, so that the other routes can work
-        // with this customer data.
+   
         loadTwitterConfiguration : function (req, res, next) {
 
+            console.log('loadTwitterConfiguration');
+            console.log(config.services.twitter );
 
-     
-            var err = [];
-
+            req.config = { services: { twitter : extend({},config.services.twitter) }};
             
+            if(typeof req.header('access_token_key') != "undefined") 
+                req.config.services.twitter.access_token_key = req.header('access_token_key');
 
-            if(config.services.configViaHttpHeader){
+            if(typeof req.header('access_token_secret') != "undefined") 
+                req.config.services.twitter.access_token_secret = req.header('access_token_secret');
 
-                var fields = [  "twitter_access_token_key",
-                                "twitter_access_token_secret" 
-                    ];
+			req.config.cache_id = req.url + req.config.services.twitter.access_token_key;
 
-                //error polling
-                fields.forEach(function(obj) { 
-                    if(!req.header(obj)) {
-                        err.push(obj);
-                    } 
-                });
+            next();
 
-                //error log
-                if(err.length > 0){
+        },
 
-                    err.forEach(function(obj) { 
-                        console.log('No ' + obj + ' defined');     
-                    });
-                    
-                    res.send('There is an oops!\n',404); 
-
-                } else {
-
-					// Configure req.services.twitter.access_token_key and 
-					// req.services.twitter.access_token_secret with http-header parameter
-                	//console.log("Configure req.services.twitter.access_token_key and req.services.twitter.access_token_secret with stored parameter");
-					req.twitterConfiguration = {    consumer_key: config.services.twitter.consumer_key,
-                                                    consumer_secret: config.services.twitter.consumer_secret,
-                                                    access_token_key: req.header('twitter_access_token_key'),
-                                                    access_token_secret: req.header('twitter_access_token_secret')
-                                                };
-					next();
-
-				}
-				                
-
-
-            } else {
-
-                if(config.services.twitter.access_token_key && config.services.twitter.access_token_secret){
-
-                	// Configure req.services.twitter.access_token_key and 
-                	// req.services.twitter.access_token_secret with stored parameter
-                	//console.log("Configure req.services.twitter.access_token_key and req.services.twitter.access_token_secret with stored parameter");
-                   config.services.twitter.configuration = {
-                            consumer_key: config.services.twitter.consumer_key,
-                            consumer_secret: config.services.twitter.consumer_secret,
-                            access_token_key: config.services.twitter.access_token_key,
-                            access_token_secret: config.services.twitter.access_token_secret
-                        };
-                    console.log(config.services.twitter.configuration);
-					next();
-
-                } else {
-
-                    console.log("Bad configuration of Twitter in services.js");
-                    res.send('There is an oops!\n',404);  
-
-                }
-            }
-
-
-			//console.log("Init Twitter with configured access_token_key and access_token_secret")
-
-			
-
-        }
     };
 
-    	
-
+     
 
     // Create the twitter api with middleware
 
 	app.namespace('/tweets', mw.loadTwitterConfiguration,  function () {
+        var tweets = require('./tweets');
 
-		require('./tweets')(app, config);
-	});
+        app.get('/latest', function (req, res) {
+            
+            cache.use(req,res,config,tweets.latest);
+
+        });   
+	
+    });
 
     app.namespace('/followers', mw.loadTwitterConfiguration,  function () {
 
