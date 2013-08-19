@@ -34,7 +34,7 @@ exports.latest = function (req,callback) {
 		var tweet,tweets = [];
 		if(!err){
 			data.forEach(function (tweet) {					
-				tweet = helpers.scraper(tweet);
+				tweet = helpers.tweet(tweet);
 				tweets.push(tweet);
 			});
 			console.log('originaldaten von Twitter abgerufen');

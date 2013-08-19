@@ -15,8 +15,6 @@
 var cache = require('../../lib/cache');
 var extend = require('util')._extend;
 
-
-
 module.exports = function (app, config) {
 
     var mw= {
@@ -40,11 +38,9 @@ module.exports = function (app, config) {
 
             next();
 
-        },
+        }
 
     };
-
-     
 
     // Create the twitter api with middleware
 

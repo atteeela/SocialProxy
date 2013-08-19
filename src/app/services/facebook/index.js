@@ -1,10 +1,10 @@
 /*!
  * socialproxy
  *
- * Copyright(c) 2012 Konex Media, Stuttgart, Germany
+ * Copyright(c) 2013 konexmedia, Hechingen, Germany
  *
  * Author:
- *     André König <andre.koenig@konexmedia.com>
+ *     Robert Böing <robert.boeing@konexmedia.com>
  *
  * MIT Licensed
  *
@@ -12,36 +12,42 @@
 
 "use strict";
 
+var cache = require('../../lib/cache');
+var extend = require('util')._extend;
 
 module.exports = function (app, config) {
- 
-
 
     var mw= {
 
         //TODO config via parameter
-        config : config,
+   
+        loadFacebookConfiguration : function (req, res, next) {
 
-        loadTwitterConfiguration : function (req, res, next) {
 
-            res.send('Authentificate Facebook!\n'); 
+            req.config = { services: { facebook : extend({},config.services.facebook) }};
+            
+            if(typeof req.header('user') != "undefined") 
+                req.config.services.facebook.user = req.header('user');
+
+            req.config.cache_id = req.url + req.config.services.facebook.user;
+
+            next();
 
         }
+
     };
 
-    	
-	// The connections array holds all open customer connections
-	// to the Twitter API, which are accessable via connections[customerId].
+    // Create the facebook api with middleware
 
-    // Create the twitter api communication object.
+    app.namespace('/posts', mw.loadFacebookConfiguration,  function () {
+        var tweets = require('./posts');
 
+        app.get('/latest', function (req, res) {
+            
+            cache.use(req,res,config,tweets.latest);
 
-
-	app.namespace('/posts', mw.loadTwitterConfiguration,  function () {
-
-		//require('./posts')(app, config);
-	});
-
-
+        });   
+    
+    });
 
 };
