@@ -2,7 +2,7 @@ exports.tweet = function (origin) {
 		return {
 			id: origin.id,
 			text: origin.text,
-			created_timer: origin.created_at
+			created_time: origin.created_at
 		}
 	};
 
